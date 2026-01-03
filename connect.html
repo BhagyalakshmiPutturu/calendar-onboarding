@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Your Google Calendar</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.5s ease-out;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .icon { font-size: 60px; text-align: center; margin-bottom: 20px; }
+        h1 { color: #333; margin-bottom: 10px; font-size: 32px; text-align: center; }
+        .subtitle { color: #666; text-align: center; margin-bottom: 30px; font-size: 16px; }
+        .business-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .business-info p { margin: 8px 0; color: #333; }
+        .business-info strong { color: #667eea; }
+        .steps {
+            background: #e8f4fd;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 25px 0;
+        }
+        .steps h3 { color: #2196F3; margin-bottom: 15px; }
+        .steps ol { padding-left: 20px; color: #333; }
+        .steps li { margin: 10px 0; line-height: 1.6; }
+        .cta-button {
+            display: block;
+            width: 100%;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .cta-button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .footer-note {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🗓️</div>
+        <h1>Connect Your Google Calendar</h1>
+        <p class="subtitle">One final step to activate your appointment system</p>
+        
+        <div class="business-info">
+            <p><strong>Business:</strong> <span id="businessName">Loading...</span></p>
+            <p><strong>Setup ID:</strong> <span id="clientId">Loading...</span></p>
+        </div>
+        
+        <div class="steps">
+            <h3>📋 What happens next:</h3>
+            <ol>
+                <li>Click the button below to open Google's secure authorization page</li>
+                <li>Sign in with your Google account (the one with your business calendar)</li>
+                <li>Review the permissions and click "Allow"</li>
+                <li>You'll be redirected back to a success page</li>
+                <li>We'll activate your account within 24 hours!</li>
+            </ol>
+        </div>
+        
+        <button class="cta-button" onclick="connectCalendar()">
+            🔗 Connect Google Calendar
+        </button>
+        
+        <div class="footer-note">
+            <p>This link was sent to you via email.</p>
+            <p>If you didn't request this, please ignore and close this window.</p>
+        </div>
+    </div>
+    
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const clientId = urlParams.get('client') || 'unknown';
+        const businessName = urlParams.get('name') || 'Your Business';
+        
+        document.getElementById('clientId').textContent = clientId;
+        document.getElementById('businessName').textContent = decodeURIComponent(businessName);
+        
+        function connectCalendar() {
+            const GOOGLE_CLIENT_ID = '484838552226-02aa14tqq3j90tab5hk0d8jqbonha2ni.apps.googleusercontent.com';
+            const REDIRECT_URI = 'https://n8n.srv1234786.hstgr.cloud/webhook/oauth-callback';
+            
+            const oauthUrl = 
+                'https://accounts.google.com/o/oauth2/v2/auth?' +
+                'client_id=' + GOOGLE_CLIENT_ID +
+                '&redirect_uri=' + encodeURIComponent(REDIRECT_URI) +
+                '&response_type=code' +
+                '&scope=' + encodeURIComponent('https://www.googleapis.com/auth/calendar') +
+                '&access_type=offline' +
+                '&prompt=consent' +
+                '&state=' + clientId;
+            
+            window.location.href = oauthUrl;
+        }
+    </script>
+</body>
+</html>
+```
+
+4. **Commit the file**
+
+5. **Enable GitHub Pages:**
+   - Go to Settings → Pages
+   - Source: Deploy from a branch
+   - Branch: `main` → `/ (root)`
+   - Click Save
+
+6. **Your URL will be:**
+```
+https://YOUR_GITHUB_USERNAME.github.io/calendar-onboarding/connect.html
+```
+
+---
+
+## **STEP 2: Update Google Cloud Console**
+
+1. **Go to:** https://console.cloud.google.com/apis/credentials
+2. **Click** on your OAuth Client ID
+3. **Verify "Authorized redirect URIs" includes:**
+```
+https://n8n.srv1234786.hstgr.cloud/webhook/oauth-callback
